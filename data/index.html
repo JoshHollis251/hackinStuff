@@ -79,15 +79,16 @@
 
 <body>
 
-  <div id="forward" class="customButton noselect color1">forward</div>
   <div id="left" class="customButton noselect color2">left</div>
-  <div id="backward" class="customButton noselect color3">backward</div>
+  <div id="forward" class="customButton noselect color1">forward</div>
   <div id="right" class="customButton noselect color4">right</div>
+  <div id="backward" class="customButton noselect color3">backward</div>
+
+  <h1 class = "header" >how fast for today</h1>
+  <input type='text' class = "customInput" value='15' onchange='changeCurrent(this);' />
 
 
   <script>
-    var Yvel;
-    var Xvel;
     const socket = new WebSocket("ws://" + location.host + "/ws");
     socket.onopen = function (event) {
       socket.send("ping");
@@ -108,18 +109,6 @@
       item.addEventListener('touchstart', e => {
         e.preventDefault();
         console.log("Pressing " + item.id);
-        if (item.id == "button1"){
-          Yvel++;
-        }
-        else if (item.id == "button2"){
-          Xvel--;
-        }
-        else if (item.id == "button3"){
-          Yvel--;
-        }
-        else if (item.id == "button4"){
-          Xvel++;
-        }
         socket.send(item.id + "On");
         item.classList.add("pressed");
       });
@@ -134,6 +123,13 @@
         item.classList.remove("pressed");
       });
     });
+
+    var textbox = document.querySelector('.customInput');
+
+    function changeCurrent(){
+      console.log("Changing current");
+      socket.send("current" + textbox.value);
+    }
 
   </script>
 </body>

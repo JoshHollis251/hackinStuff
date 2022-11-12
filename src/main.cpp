@@ -1,5 +1,5 @@
 
-//********************************************************************************************
+//*******************************************2*************************************************
 // Configuration
 //********************************************************************************************
 
@@ -11,7 +11,6 @@
 
 // Constants
 #define LED_PIN 2
-#define CURRENT 15.0
 #define SSID_NAME "JamesiPhone"
 #define PASSWORD  "coolboy69"
 
@@ -28,6 +27,8 @@ unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
 unsigned long lastPingTime = 0;
+
+float current = 15.0;
 
 //********************************************************************************************
 // Helper functions
@@ -53,32 +54,34 @@ void onWsEvent(
   if (type == WS_EVT_DATA) {
     String dataStr = ((String)(char*)data).substring(0, len);
 
+    Serial.println("Received WS: " + dataStr);
 
     if (dataStr == "ping") {
       lastPingTime = millis();
-
-
+    } else if (dataStr.substring(0, 7) == "current") {
+      current = dataStr.substring(7, len).toFloat();
+      Serial.println("Current set to " + String(current) + " A.");
     } else if (dataStr == "forwardOn") {
       digitalWrite(LED_PIN, HIGH);
-      UART.setCurrent(CURRENT);
-      UART.setCurrent(CURRENT, 108);
+      UART.setCurrent(current);
+      UART.setCurrent(current, 108);
     } else if (dataStr == "forwardOff") {
       digitalWrite(LED_PIN, LOW);
       UART.setCurrent(0);
       UART.setCurrent(0, 108);
     } else if (dataStr == "backwardOn") {
-      UART.setCurrent(-CURRENT);
-      UART.setCurrent(-CURRENT, 108);
+      UART.setCurrent(-current);
+      UART.setCurrent(-current, 108);
     } else if (dataStr == "backwardOff") {
       UART.setCurrent(0);
       UART.setCurrent(0, 108);
     } else if (dataStr == "leftOn") {
-      UART.setCurrent(CURRENT, 108);
+      UART.setCurrent(current, 108);
     } else if (dataStr == "leftOff") {
       UART.setCurrent(0);
       UART.setCurrent(0, 108);
     } else if (dataStr == "rightOn") {
-      UART.setCurrent(CURRENT);
+      UART.setCurrent(current);
     } else if (dataStr == "rightOff") {
       UART.setCurrent(0);
       UART.setCurrent(0, 108);
