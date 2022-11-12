@@ -13,6 +13,7 @@
 #define LED_PIN 2
 #define SSID_NAME "JamesiPhone"
 #define PASSWORD  "coolboy69"
+
 // initiate uart class
 VescUart UART;
 
@@ -32,6 +33,8 @@ unsigned long lastPingTime = 0;
 //********************************************************************************************
 void panic() {
   digitalWrite(LED_PIN, LOW);
+  UART.setCurrent(0);
+  UART.setCurrent(0, 108);
 }
 
 
@@ -55,11 +58,13 @@ void onWsEvent(
 
 
     } else if (dataStr == "button1On") {
-      //digitalWrite(LED_PIN, HIGH);
-      UART.setCurrent(1.0);
+      digitalWrite(LED_PIN, HIGH);
+      UART.setCurrent(3.0);
+      UART.setCurrent(3.0, 108);
     } else if (dataStr == "button1Off") {
-      //digitalWrite(LED_PIN, LOW);
+      digitalWrite(LED_PIN, LOW);
       UART.setCurrent(0);
+      UART.setCurrent(0, 108);
     } else if (dataStr == "button2On") {
       //
     } else if (dataStr == "button2Off") {
@@ -115,11 +120,11 @@ void setup() {
   digitalWrite(LED_PIN, LOW);
 
   Serial.begin(9600);
-  Serial1.begin(115200);
+  Serial2.begin(115200);
 
-  while (!Serial1) {;}
+  while (!Serial2) {;}
   
-  UART.setSerialPort(&Serial1) ; 
+  UART.setSerialPort(&Serial2) ; 
   
   
 
