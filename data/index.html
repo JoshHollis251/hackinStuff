@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <title>The Horn Control Center</title>
+  <style>
+
+    body {
+      margin:40px;
+      background-color: #36393E;
+      text-align: center;
+    }
+
+    .noselect {
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+    }
+
+    .color1 {
+      background-color: #4D9DE0;
+    }
+
+    .color2 {
+      background-color: #E15554;
+    }
+
+    .color3 {
+      background-color: #E1BC29;
+    }
+
+    .color4 {
+      background-color: #3BB273;
+    }
+
+    .customButton {
+      display: inline-block;
+	    border-radius:50px;
+	    border:none;
+	    display:inline-block;
+	    cursor:pointer;
+	    color:#ffffff;
+	    font-family:Arial;
+      font-size: 24px;
+      font-size: 4vw;
+      height: 150px;
+      width: 60%;
+      min-width: 30px;
+      text-align: center;
+      line-height: 150px;
+      margin: 2% 0% 2% 0%;
+      transition: width 0.2s;
+    }
+
+    .pressed {
+      width:65%;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div id="button1" class="customButton noselect color1">Button1</div>
+  <div id="button2" class="customButton noselect color2">Button2</div>
+  <div id="button3" class="customButton noselect color3">Button3</div>
+
+  <script>
+    const socket = new WebSocket("ws://" + location.host + "/ws");
+    socket.onopen = function (event) {
+      socket.send("ping");
+    
+      function ping() {
+        socket.send("ping");
+      }
+      setInterval(ping, 1000);
+    }
+    
+    document.querySelectorAll('.customButton').forEach(item => {
+      item.addEventListener('mousedown', e => {
+        e.preventDefault();
+        console.log("Pressing " + item.id);
+        socket.send(item.id + "On");
+        item.classList.add("pressed");
+      });
+      item.addEventListener('touchstart', e => {
+        e.preventDefault();
+        console.log("Pressing " + item.id);
+        socket.send(item.id + "On");
+        item.classList.add("pressed");
+      });
+      item.addEventListener('mouseup', e => {
+        console.log("Releasing " + item.id);
+        socket.send(item.id + "Off");
+        item.classList.remove("pressed");
+      });
+      item.addEventListener('touchend', e => {
+        console.log("Releasing " + item.id);
+        socket.send(item.id + "Off");
+        item.classList.remove("pressed");
+      });
+    });
+
+  </script>
+</body>
+
+</html>
