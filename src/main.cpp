@@ -11,6 +11,7 @@
 
 // Constants
 #define LED_PIN 2
+#define CURRENT 15.0
 #define SSID_NAME "JamesiPhone"
 #define PASSWORD  "coolboy69"
 
@@ -57,24 +58,31 @@ void onWsEvent(
       lastPingTime = millis();
 
 
-    } else if (dataStr == "button1On") {
+    } else if (dataStr == "forwardOn") {
       digitalWrite(LED_PIN, HIGH);
-      UART.setCurrent(3.0);
-      UART.setCurrent(3.0, 108);
-    } else if (dataStr == "button1Off") {
+      UART.setCurrent(CURRENT);
+      UART.setCurrent(CURRENT, 108);
+    } else if (dataStr == "forwardOff") {
       digitalWrite(LED_PIN, LOW);
       UART.setCurrent(0);
       UART.setCurrent(0, 108);
-    } else if (dataStr == "button2On") {
-      //
-    } else if (dataStr == "button2Off") {
-      //
-    } else if (dataStr == "button3On") {
-      //
-    } else if (dataStr == "button3Off") {
-      //
+    } else if (dataStr == "backwardOn") {
+      UART.setCurrent(-CURRENT);
+      UART.setCurrent(-CURRENT, 108);
+    } else if (dataStr == "backwardOff") {
+      UART.setCurrent(0);
+      UART.setCurrent(0, 108);
+    } else if (dataStr == "leftOn") {
+      UART.setCurrent(CURRENT, 108);
+    } else if (dataStr == "leftOff") {
+      UART.setCurrent(0);
+      UART.setCurrent(0, 108);
+    } else if (dataStr == "rightOn") {
+      UART.setCurrent(CURRENT);
+    } else if (dataStr == "rightOff") {
+      UART.setCurrent(0);
+      UART.setCurrent(0, 108);
     }
-
     
   } else if (type == WS_EVT_DISCONNECT) {
     Serial.println("[WS] Client disconnected");
@@ -164,7 +172,7 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastPingTime > 4000) {
+  if (millis() - lastPingTime > 400) {
     Serial.println("[INFO] No connections to server. Entering shutdown mode");
     panic();
     delay(500);

@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, user-scalable=no" />
-  <title>The Horn Control Center</title>
+  <title>The S.I.T Control</title>
+  <h1 class = "header" >super awesome control system</h1>
   <style>
 
     body {
@@ -39,27 +40,38 @@
       background-color: #3BB273;
     }
 
+    .header {
+      color: #ffffff;
+    }
+
+    .number {
+      color: white;
+      margin: 10% 10% 10% 10%;
+    }
+
     .customButton {
       display: inline-block;
 	    border-radius:50px;
-	    border:none;
+	    border:black;
 	    display:inline-block;
 	    cursor:pointer;
-	    color:#ffffff;
+	    color:black;
 	    font-family:Arial;
-      font-size: 24px;
-      font-size: 4vw;
-      height: 150px;
-      width: 60%;
-      min-width: 30px;
+      font-size: 12px;
+      height: 50px;
+      width: 20%;
       text-align: center;
-      line-height: 150px;
-      margin: 2% 0% 2% 0%;
+      line-height: 50px;
+      margin: 2% 2% 2% 2%;
       transition: width 0.2s;
     }
 
+    .customButton:active {
+      transform: translateY(8px);
+    }
+
     .pressed {
-      width:65%;
+      transform: translateY(8px);
     }
 
   </style>
@@ -67,11 +79,15 @@
 
 <body>
 
-  <div id="button1" class="customButton noselect color1">Button1</div>
-  <div id="button2" class="customButton noselect color2">Button2</div>
-  <div id="button3" class="customButton noselect color3">Button3</div>
+  <div id="forward" class="customButton noselect color1">forward</div>
+  <div id="left" class="customButton noselect color2">left</div>
+  <div id="backward" class="customButton noselect color3">backward</div>
+  <div id="right" class="customButton noselect color4">right</div>
+
 
   <script>
+    var Yvel;
+    var Xvel;
     const socket = new WebSocket("ws://" + location.host + "/ws");
     socket.onopen = function (event) {
       socket.send("ping");
@@ -79,7 +95,7 @@
       function ping() {
         socket.send("ping");
       }
-      setInterval(ping, 1000);
+      setInterval(ping, 300);
     }
     
     document.querySelectorAll('.customButton').forEach(item => {
@@ -92,6 +108,18 @@
       item.addEventListener('touchstart', e => {
         e.preventDefault();
         console.log("Pressing " + item.id);
+        if (item.id == "button1"){
+          Yvel++;
+        }
+        else if (item.id == "button2"){
+          Xvel--;
+        }
+        else if (item.id == "button3"){
+          Yvel--;
+        }
+        else if (item.id == "button4"){
+          Xvel++;
+        }
         socket.send(item.id + "On");
         item.classList.add("pressed");
       });
